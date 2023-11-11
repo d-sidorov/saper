@@ -7,3 +7,11 @@ export type ISettings = {
   rows: number
   amountOfMines: number
 }
+
+export type ICell = {
+  x: number
+  y: number
+  isOpen: boolean
+  numberOfMinesNearby: number
+  isMine: boolean
+}

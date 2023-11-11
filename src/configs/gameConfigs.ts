@@ -1,6 +1,6 @@
 import type { ISettings } from '@models/index'
 
-const settings: ISettings[] = [
+export const settings: ISettings[] = [
   {
     key: 'easy',
     label: 'Простой',
@@ -9,7 +9,16 @@ const settings: ISettings[] = [
     amountOfMines: 10
   },
   { key: 'medium', label: 'Средний', cols: 16, rows: 16, amountOfMines: 40 },
-  { key: 'hard', label: 'Сложный', cols: 16, rows: 32, amountOfMines: 100 }
+  { key: 'hard', label: 'Сложный', cols: 32, rows: 16, amountOfMines: 100 }
 ]
 
-export { settings }
+export const relativeDisplacement = [
+  [-1, -1],
+  [-1, 0],
+  [-1, 1],
+  [0, -1],
+  [0, 1],
+  [1, -1],
+  [1, 0],
+  [1, 1]
+]
