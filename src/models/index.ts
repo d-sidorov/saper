@@ -8,10 +8,13 @@ export type ISettings = {
   amountOfMines: number
 }
 
+export type IGameStatus = 'pending' | 'process' | 'lose' | 'win'
+
 export type ICell = {
   x: number
   y: number
   isOpen: boolean
   numberOfMinesNearby: number
   isMine: boolean
+  isFlag: boolean
 }
