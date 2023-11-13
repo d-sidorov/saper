@@ -5,20 +5,22 @@ import MyButton from '@components/UI/MyButton.vue'
 import GameCell from './GameCell.vue'
 
 import { relativeDisplacement } from '@configs/gameConfigs'
-import { generateField, getRandomItemsFromArray } from '@/utils'
+import { generateField, getRandomItemsFromArray, getSeconds, getMinutes } from '@/utils'
 import { ref, reactive, computed, onBeforeUnmount } from 'vue'
 
 const props = defineProps<{ activeGameSetting: ISettings }>()
-defineEmits<{ (e: 'goHome'): void }>()
+const emit = defineEmits<{
+  (e: 'goHome'): void
+  (e: 'setLeaderBoard', time: number): void
+}>()
 
 const getField = () => generateField(props.activeGameSetting.cols, props.activeGameSetting.rows)
-const time = ref()
+const field = reactive(getField())
+const time = ref(0)
 const startTime = ref<Date | null>()
 const timerId = ref<number>()
 const isFirstStep = ref(true)
 const gameStatus = ref<IGameStatus>('pending')
-
-let field = reactive(getField())
 
 const amountOfFlags = computed(() => {
   return field.reduce((acc, row) => {
@@ -38,9 +40,8 @@ const isGameCompleted = computed(() => {
   return true
 })
 const formatTime = computed(() => {
-  const seconds = Math.floor(time.value / 1000) % 60 || 0
-  const minutes = Math.floor(time.value / 1000 / 60) || 0
-
+  const seconds = getSeconds(time.value)
+  const minutes = getMinutes(time.value)
   return {
     minutes: `0${minutes}`.slice(-2),
     seconds: `0${seconds}`.slice(-2)
@@ -57,7 +58,15 @@ const onCellClick = (cell: ICell) => {
 
   openNeighbors(cell)
 
-  if (isGameCompleted.value) endGame('win')
+  if (isGameCompleted.value) {
+    endGame('win')
+    emit('setLeaderBoard', time.value)
+  }
+}
+
+const onCellRightClick = (cell: ICell) => {
+  if (isGameFinished.value || cell.isOpen) return
+  cell.isFlag = !cell.isFlag
 }
 
 const startGame = (cell: ICell) => {
@@ -79,11 +88,6 @@ const restart = () => {
   gameStatus.value = 'pending'
   field.splice(0, props.activeGameSetting.rows, ...getField())
   clearTimer()
-}
-
-const onCellRightClick = (cell: ICell) => {
-  if (isGameFinished.value || cell.isOpen) return
-  cell.isFlag = !cell.isFlag
 }
 
 const setMines = (ignoreCell: ICell) => {
@@ -130,7 +134,7 @@ const setTimer = () => {
   timerId.value = setInterval(() => {
     if (!startTime.value) return
     time.value = +new Date() - +startTime.value
-  }, 1000)
+  }, 0)
 }
 
 const clearTimer = () => clearInterval(timerId.value)
@@ -142,7 +146,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="flex flex-col gap-4">
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center mx-auto gap-x-8">
       <MyButton @click="$emit('goHome')"> {{ '<-' }} </MyButton>
       <div class="flex gap-x-2 items-center">
         <MyButton @click="restart"> 0 </MyButton>
@@ -151,8 +155,8 @@ onBeforeUnmount(() => {
       <span>Время: {{ formatTime.minutes }}:{{ formatTime.seconds }}</span>
     </div>
 
-    <div class="flex justify-center">
-      <table class="border-collapse border border-slate-400">
+    <div class="flex overflow-auto">
+      <table class="border-collapse border border-slate-400 mx-auto">
         <tr v-for="(row, y) in field" :key="y">
           <GameCell
             v-for="(cell, x) in row"

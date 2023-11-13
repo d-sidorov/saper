@@ -22,3 +22,6 @@ export const relativeDisplacement = [
   [1, 0],
   [1, 1]
 ]
+
+export const LEADER_BOARD_STORAGE_NAME = 'leaderBoard'
+export const MAX_LEADER_BOARD_STORAGE = 10

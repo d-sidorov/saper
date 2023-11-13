@@ -24,6 +24,14 @@ export const getRandomItemsFromArray = <T>(arr: T[], amount: number) => {
   return result
 }
 
+export const getSeconds = (ms: number) => {
+  return Math.floor(ms / 1000) % 60 || 0
+}
+
+export const getMinutes = (ms: number) => {
+  return Math.floor(ms / 1000 / 60) || 0
+}
+
 const getDefaultCellWithoutCoordinates = (): Omit<ICell, 'x' | 'y'> => {
   return {
     numberOfMinesNearby: 0,

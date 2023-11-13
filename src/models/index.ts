@@ -18,3 +18,8 @@ export type ICell = {
   isMine: boolean
   isFlag: boolean
 }
+
+export type ILeaderBoardItem = {
+  name: string
+  time: number
+}

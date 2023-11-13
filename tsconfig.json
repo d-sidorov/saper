@@ -18,6 +18,8 @@
       "@components/*": ["src/components/*"],
       "@models/*": ["src/models/*"],
       "@configs/*": ["src/configs/*"],
+      "@store/*": ["src/store/*"],
+      "@router/*": ["src/router/*"],
       "@assets/*": ["src/assets/*"]
     }
   }
