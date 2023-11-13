@@ -4,6 +4,16 @@ import { computed, toRefs } from 'vue'
 
 const props = defineProps<{ cell: ICell }>()
 defineEmits<{ (e: 'click'): void; (e: 'contextmenu'): void }>()
+const cellBackgroundByMineAmountMap: { [key: number]: string } = {
+  1: 'bg-blue-400',
+  2: 'bg-green-400',
+  3: 'bg-red-400',
+  4: 'bg-blue-800',
+  5: 'bg-amber-700',
+  6: 'bg-teal-300',
+  7: 'bg-black',
+  8: 'bg-white'
+}
 
 const { cell } = toRefs(props)
 
@@ -18,8 +28,11 @@ const cellState = computed(() => {
 
 const cellBackground = computed(() => {
   switch (cellState.value) {
-    case 'opened':
-      return 'bg-green-300'
+    case 'opened': {
+      if (cell.value.numberOfMinesNearby)
+        return cellBackgroundByMineAmountMap[cell.value.numberOfMinesNearby]
+      return 'bg-gray-200'
+    }
     case 'closed':
       return 'bg-white'
     case 'mine':
