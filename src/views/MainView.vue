@@ -5,7 +5,7 @@ import TheHeader from '@components/TheHeader.vue'
 
 <template>
   <TheHeader />
-  <div class="p-4 pt-16 h-screen flex items-center justify-center w-screen">
+  <div class="p-4 pt-16 min-h-screen flex items-center justify-center w-screen">
     <RouterView />
   </div>
 </template>

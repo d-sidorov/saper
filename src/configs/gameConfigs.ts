@@ -9,7 +9,8 @@ export const settings: ISettings[] = [
     amountOfMines: 10
   },
   { key: 'medium', label: 'Средний', cols: 16, rows: 16, amountOfMines: 40 },
-  { key: 'hard', label: 'Сложный', cols: 32, rows: 16, amountOfMines: 100 }
+  { key: 'hard', label: 'Сложный', cols: 32, rows: 16, amountOfMines: 100 },
+  { key: 'custom', label: 'Кастомный', cols: 10, rows: 10, amountOfMines: 0 }
 ]
 
 export const relativeDisplacement = [

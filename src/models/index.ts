@@ -1,7 +1,7 @@
 export type IGamePages = 'settings' | 'game'
 
 export type ISettings = {
-  key: 'easy' | 'medium' | 'hard'
+  key: 'easy' | 'medium' | 'hard' | 'custom'
   label: string
   cols: number
   rows: number

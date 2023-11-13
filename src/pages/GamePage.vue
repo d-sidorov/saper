@@ -10,9 +10,18 @@ const leaderBoardStore = useLeaderBoardStore()
 const activeComponentName = ref<IGamePages>('settings')
 const activeGameSetting = ref<ISettings | null>(null)
 const username = ref<string>('')
+const customCols = ref<string>('')
+const customRows = ref<string>('')
+const customAmountOfMines = ref<string>('')
 
 const onStartGame = () => {
   if (!activeGameSetting.value) return
+
+  if (activeGameSetting.value.key === 'custom') {
+    activeGameSetting.value.cols = Number(customCols.value)
+    activeGameSetting.value.rows = Number(customRows.value)
+    activeGameSetting.value.amountOfMines = Number(customAmountOfMines.value)
+  }
   activeComponentName.value = 'game'
 }
 const onGoHome = () => {
@@ -30,6 +39,9 @@ const onSetLeaderBoard = (time: number) => {
       v-if="activeComponentName === 'settings'"
       v-model:gameSetting="activeGameSetting"
       v-model:username="username"
+      v-model:customCols="customCols"
+      v-model:customRows="customRows"
+      v-model:customAmountOfMines="customAmountOfMines"
       @startGame="onStartGame"
     />
     <GameMain
