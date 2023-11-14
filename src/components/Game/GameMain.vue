@@ -77,6 +77,34 @@ const onCellRightClick = (cell: ICell) => {
   cell.mark = newMark
 }
 
+const onCellWheelClick = (cell: ICell) => {
+  if (!cell.isOpen || !cell.numberOfMinesNearby) return
+  const neighbors = getNeighbors(cell)
+  const numberOfFlags = neighbors.reduce((acc, cell) => {
+    return cell.mark === 'flag' ? ++acc : acc
+  }, 0)
+  if (numberOfFlags === cell.numberOfMinesNearby) {
+    neighbors.forEach((cell) => {
+      if (!cell.isOpen && cell.mark !== 'flag') {
+        if (cell.isMine) {
+          openCell(cell, false)
+          endGame('lose')
+        } else openCell(cell)
+      }
+    })
+  }
+}
+
+const onCellWheelDown = (cell: ICell) => {
+  const neighbors = getNeighbors(cell)
+  neighbors.forEach((neighbor) => (neighbor.isLight = true))
+}
+
+const onCellWheelUp = (cell: ICell) => {
+  const neighbors = getNeighbors(cell)
+  neighbors.forEach((neighbor) => (neighbor.isLight = false))
+}
+
 const startGame = (cell: ICell) => {
   isFirstStep.value = false
   gameStatus.value = 'process'
@@ -106,11 +134,11 @@ const setMines = (ignoreCell: ICell) => {
   mines.forEach((mine) => (mine.isMine = true))
 }
 
-const openCell = (cell: ICell) => {
+const openCell = (cell: ICell, isOpenNeighbors = true) => {
   cell.isOpen = true
   cell.mark = null
   setNumberOfMinesNearby(cell)
-  openNeighbors(cell)
+  if (isOpenNeighbors) openNeighbors(cell)
 }
 
 const setNumberOfMinesNearby = (cell: ICell) => {
@@ -183,6 +211,9 @@ onBeforeUnmount(() => {
             :cell="cell"
             @click="onCellClick(cell)"
             @contextmenu="onCellRightClick(cell)"
+            @wheelClick="onCellWheelClick(cell)"
+            @wheelDown="onCellWheelDown(cell)"
+            @wheelUp="onCellWheelUp(cell)"
           />
         </tr>
       </table>

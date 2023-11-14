@@ -37,6 +37,7 @@ const getDefaultCellWithoutCoordinates = (): Omit<ICell, 'x' | 'y'> => {
     numberOfMinesNearby: 0,
     isMine: false,
     isOpen: false,
-    isFlag: false
+    mark: null,
+    isLight: false
   }
 }

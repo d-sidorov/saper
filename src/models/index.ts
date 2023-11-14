@@ -17,6 +17,7 @@ export type ICell = {
   numberOfMinesNearby: number
   isMine: boolean
   mark: ICellMarks
+  isLight: boolean
 }
 
 export type ICellMarks = 'flag' | 'question' | null
