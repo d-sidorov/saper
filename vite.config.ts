@@ -6,6 +6,7 @@ import svgLoader from 'vite-svg-loader'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/saper/dist/',
   plugins: [vue(), svgLoader()],
   resolve: {
     alias: {
