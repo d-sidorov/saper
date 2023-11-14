@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import type { ISettings, ICell, IGameStatus } from '@/models'
+import type { ISettings, ICell, ICellMarks, IGameStatus } from '@/models'
 
 import MyButton from '@components/UI/MyButton.vue'
 import GameCell from './GameCell.vue'
+import refreshIcon from '@assets/icons/refresh.svg?url'
+import homeIcon from '@assets/icons/home.svg?url'
 
 import { relativeDisplacement } from '@configs/gameConfigs'
 import { generateField, getRandomItemsFromArray, getSeconds, getMinutes } from '@/utils'
@@ -24,7 +26,7 @@ const gameStatus = ref<IGameStatus>('pending')
 
 const amountOfFlags = computed(() => {
   return field.reduce((acc, row) => {
-    const cellsWithFlag = row.filter((cell) => cell.isFlag)
+    const cellsWithFlag = row.filter((cell) => cell.mark === 'flag')
     return acc + cellsWithFlag.length
   }, 0)
 })
@@ -34,7 +36,7 @@ const isGameCompleted = computed(() => {
   for (let i = 0; i < field.length; i++) {
     for (let j = 0; j < field[i].length; j++) {
       const cell = field[i][j]
-      if (!cell.isOpen && !cell.isFlag && !cell.isMine) return false
+      if (!cell.isOpen && cell.mark !== 'flag' && !cell.isMine) return false
     }
   }
   return true
@@ -49,14 +51,14 @@ const formatTime = computed(() => {
 })
 
 const onCellClick = (cell: ICell) => {
-  if (isGameFinished.value || cell.isFlag) return
+  if (isGameFinished.value || cell.isOpen || cell.mark) return
 
   if (isFirstStep.value) startGame(cell)
 
   cell.isOpen = true
   if (cell.isMine) return endGame('lose')
 
-  openNeighbors(cell)
+  openCell(cell)
 
   if (isGameCompleted.value) {
     endGame('win')
@@ -66,7 +68,8 @@ const onCellClick = (cell: ICell) => {
 
 const onCellRightClick = (cell: ICell) => {
   if (isGameFinished.value || cell.isOpen) return
-  cell.isFlag = !cell.isFlag
+  const newMark: ICellMarks = !cell.mark ? 'flag' : cell.mark === 'flag' ? 'question' : null
+  cell.mark = newMark
 }
 
 const startGame = (cell: ICell) => {
@@ -98,7 +101,14 @@ const setMines = (ignoreCell: ICell) => {
   mines.forEach((mine) => (mine.isMine = true))
 }
 
-const openNeighbors = (cell: ICell) => {
+const openCell = (cell: ICell) => {
+  cell.isOpen = true
+  cell.mark = null
+  setNumberOfMinesNearby(cell)
+  openNeighbors(cell)
+}
+
+const setNumberOfMinesNearby = (cell: ICell) => {
   const neighbors = getNeighbors(cell)
   let numberOfMinesNearby = 0
 
@@ -106,15 +116,17 @@ const openNeighbors = (cell: ICell) => {
     if (neighbor.isMine) numberOfMinesNearby++
   })
   cell.numberOfMinesNearby = numberOfMinesNearby
+}
 
-  if (numberOfMinesNearby === 0) {
-    neighbors.forEach((neighbor) => {
-      if (!neighbor.isOpen) {
-        neighbor.isOpen = true
-        openNeighbors(neighbor)
-      }
-    })
-  }
+const openNeighbors = (cell: ICell) => {
+  if (cell.numberOfMinesNearby !== 0) return
+
+  const neighbors = getNeighbors(cell)
+  neighbors.forEach((neighbor) => {
+    if (!neighbor.isOpen) {
+      openCell(neighbor)
+    }
+  })
 }
 
 const getNeighbors = (cell: ICell) => {
@@ -147,12 +159,14 @@ onBeforeUnmount(() => {
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex justify-between items-center mx-auto gap-x-8">
-      <MyButton @click="$emit('goHome')"> {{ '<-' }} </MyButton>
+      <MyButton @click="$emit('goHome')"><img :src="homeIcon" height="20" width="20" /> </MyButton>
       <div class="flex gap-x-2 items-center">
-        <MyButton @click="restart"> 0 </MyButton>
-        <span>{{ score }}</span>
+        <MyButton @click="restart">
+          <img :src="refreshIcon" height="20" width="20" />
+        </MyButton>
+        <span class="min-w-[30px] text-center">{{ score }}</span>
       </div>
-      <span>Время: {{ formatTime.minutes }}:{{ formatTime.seconds }}</span>
+      <span>{{ formatTime.minutes }}:{{ formatTime.seconds }}</span>
     </div>
 
     <div class="flex overflow-auto">

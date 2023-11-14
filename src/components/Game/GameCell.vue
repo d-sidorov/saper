@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { ICell } from '@/models'
 import { computed, toRefs } from 'vue'
+import bombIcon from '@assets/icons/bomb.svg?url'
+import flagIcon from '@assets/icons/flag.svg?url'
+import questionIcon from '@assets/icons/question.svg?url'
 
 const props = defineProps<{ cell: ICell }>()
 defineEmits<{ (e: 'click'): void; (e: 'contextmenu'): void }>()
@@ -18,7 +21,7 @@ const cellBackgroundByMineAmountMap: { [key: number]: string } = {
 const { cell } = toRefs(props)
 
 const cellState = computed(() => {
-  if (cell.value.isFlag) return 'flag'
+  if (cell.value.mark) return 'isMarked'
   if (!cell.value.isOpen) return 'closed'
   else if (cell.value.isMine) return 'mine'
   else if (cell.value.isOpen) return 'opened'
@@ -43,9 +46,7 @@ const cellBackground = computed(() => {
 })
 
 const cellLabel = computed(() => {
-  if (cellState.value === 'flag') return 'f'
   if (cellState.value === 'closed') return ''
-  if (cellState.value === 'mine') return '*'
   return cell.value.numberOfMinesNearby || null
 })
 </script>
@@ -58,7 +59,20 @@ const cellLabel = computed(() => {
     @contextmenu.prevent="$emit('contextmenu')"
   >
     <div class="w-100 h-100 flex items-center justify-center">
-      {{ cellLabel }}
+      <img v-if="cell.isOpen && cell.isMine" :src="bombIcon" height="20" width="20" />
+      <img
+        v-else-if="cellState === 'isMarked' && cell.mark === 'flag'"
+        :src="flagIcon"
+        height="20"
+        width="20"
+      />
+      <img
+        v-else-if="cellState === 'isMarked' && cell.mark === 'question'"
+        :src="questionIcon"
+        height="20"
+        width="20"
+      />
+      <span v-else>{{ cellLabel }}</span>
     </div>
   </td>
 </template>

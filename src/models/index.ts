@@ -16,8 +16,10 @@ export type ICell = {
   isOpen: boolean
   numberOfMinesNearby: number
   isMine: boolean
-  isFlag: boolean
+  mark: ICellMarks
 }
+
+export type ICellMarks = 'flag' | 'question' | null
 
 export type ILeaderBoardItem = {
   name: string
