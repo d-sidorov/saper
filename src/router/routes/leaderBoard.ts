@@ -3,6 +3,9 @@ import LeaderBoardPage from '@pages/LeaderBoardPage.vue'
 
 export default {
   path: '/leader-board',
-  name: 'Таблица лидеров',
+  name: 'leader-board',
+  meta: {
+    title: 'Таблица лидеров'
+  },
   component: LeaderBoardPage
 } as RouteRecordRaw

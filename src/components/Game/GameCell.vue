@@ -7,11 +7,11 @@ import questionIcon from '@assets/icons/question.svg?url'
 
 const props = defineProps<{ cell: ICell }>()
 const emit = defineEmits<{
-  (e: 'click', event: MouseEvent): void
-  (e: 'contextmenu', event: MouseEvent): void
-  (e: 'wheelDown', event: MouseEvent): void
-  (e: 'wheelUp', event: MouseEvent): void
-  (e: 'wheelClick', event: MouseEvent): void
+  (e: 'click'): void
+  (e: 'contextmenu'): void
+  (e: 'wheelDown'): void
+  (e: 'wheelUp'): void
+  (e: 'wheelClick'): void
 }>()
 const cellBackgroundByMineAmountMap: { [key: number]: string } = {
   1: 'bg-blue-400',
@@ -69,13 +69,13 @@ const onMouseDown = (e: MouseEvent) => {
     e.preventDefault()
 
     mouseDownTimer = setTimeout(() => {
-      emit('wheelDown', e)
+      emit('wheelDown')
       mouseWheelClick = false
     }, 1000)
 
     e.target?.addEventListener('mouseleave', () => {
       clearTimeout(mouseDownTimer)
-      emit('wheelUp', e)
+      emit('wheelUp')
     })
   }
 }
@@ -86,10 +86,10 @@ const onMouseUp = (e: MouseEvent) => {
 
     clearTimeout(mouseDownTimer)
     if (mouseWheelClick) {
-      emit('wheelClick', e)
+      emit('wheelClick')
     } else {
       mouseWheelClick = true
-      emit('wheelUp', e)
+      emit('wheelUp')
     }
   }
 }

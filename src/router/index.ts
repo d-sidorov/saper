@@ -9,7 +9,8 @@ const router = createRouter({
       redirect: game,
 
       children: [game, leaderBoard]
-    }
+    },
+    { path: '/:notFound', redirect: game }
   ]
 })
 

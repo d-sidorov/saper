@@ -1,46 +1,18 @@
-# Saper
+# Сапер
 
-This template should help get you started developing with Vue 3 in Vite.
+### Правила игры
 
-## Recommended IDE Setup
+Игровое поле - прямоугольник из клеток. В момент начала игры все клетки "закрыты" - на них ничего нет. В момент начала игры мины проставляются случайным образом под клетки, не показываясь игроку.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+Игрок может кликом левой кнопки мыши на любую закрытую клетку открыть ее, правила открытия клеток:
 
-## Type Support for `.vue` Imports in TS
+- Если в клетке мина, то игрок проигрывает.
+- Если в соседних 8 клетках, граничащих с ней хотя бы углом, есть хоть одна мина, то клетка покажет число мин в этих клетках.
+  - Цифры имеют цвета, зависящий от числа мин вокруг: 1 — синяя, 2 — зелёная, 3 — красная, 4 — тёмно-синяя 5 — коричневая 6 — бирюзовая 7 — чёрная 8 — белая.
+- Если первые два условия не выполнены, то клетка автоматически открывает все восемь клеток вокруг себя и остаются пустой. Так клетки открываться должны, пока не дойдут до границы игрового поля, либо не наткнутся на клетки, под которыми будут цифры.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+Игрок правой кнопкой мыши может поставить метку на закрытую клетку. Доступные метки: "флажок", "вопросик" и без метки, меняются циклически.
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+Если все поля либо открыты, либо помечены флажками, а на счетчике 0, то игрок побеждает.
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+Зажав среднюю кнопку мыши на открытой клетке с цифрой, игрок может "подсветить" 8 клеток вокруг него. Если кнопка отпущена менее, чем через 1 секунду после нажатия, а вокруг клетки флажков столько же, сколько должно быть мин, то все не помеченные флажками неоткрытые клетки открываются, даже если флажки расставлены ошибочно.
