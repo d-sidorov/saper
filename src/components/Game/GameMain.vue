@@ -49,10 +49,10 @@ const formatTime = computed(() => {
     seconds: `0${seconds}`.slice(-2)
   }
 })
-const gameStatusBorderClass = computed(() => {
+const tableBorderClassByGameStatus = computed(() => {
   if (gameStatus.value === 'lose') return 'border-2 border-red-500'
   else if (gameStatus.value === 'win') return 'border-2 border-green-500'
-  return null
+  return 'border-slate-400 '
 })
 
 const onCellClick = (cell: ICell) => {
@@ -79,6 +79,7 @@ const onCellRightClick = (cell: ICell) => {
 
 const onCellWheelClick = (cell: ICell) => {
   if (!cell.isOpen || !cell.numberOfMinesNearby) return
+
   const neighbors = getNeighbors(cell)
   const numberOfFlags = neighbors.reduce((acc, cell) => {
     return cell.mark === 'flag' ? ++acc : acc
@@ -86,10 +87,7 @@ const onCellWheelClick = (cell: ICell) => {
   if (numberOfFlags === cell.numberOfMinesNearby) {
     neighbors.forEach((cell) => {
       if (!cell.isOpen && cell.mark !== 'flag') {
-        if (cell.isMine) {
-          openCell(cell, false)
-          endGame('lose')
-        } else openCell(cell)
+        onCellClick(cell)
       }
     })
   }
@@ -203,7 +201,7 @@ onBeforeUnmount(() => {
     </div>
 
     <div class="flex overflow-auto">
-      <table class="border-collapse border border-slate-400 mx-auto" :class="gameStatusBorderClass">
+      <table class="border-collapse border mx-auto" :class="tableBorderClassByGameStatus">
         <tr v-for="(row, y) in field" :key="y">
           <GameCell
             v-for="(cell, x) in row"

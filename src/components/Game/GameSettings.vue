@@ -13,9 +13,9 @@ const props = withDefaults(
   defineProps<{
     gameSetting: ISettings | null
     username: string
-    customCols: string
-    customRows: string
-    customAmountOfMines: string
+    customCols: number
+    customRows: number
+    customAmountOfMines: number
   }>(),
   {
     gameSetting: null
@@ -24,15 +24,17 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: 'update:gameSetting', setting: ISettings): void
   (e: 'update:username', username: string): void
-  (e: 'update:customCols', customCols: string): void
-  (e: 'update:customRows', customRows: string): void
-  (e: 'update:customAmountOfMines', customAmountOfMines: string): void
+  (e: 'update:customCols', customCols: number): void
+  (e: 'update:customRows', customRows: number): void
+  (e: 'update:customAmountOfMines', customAmountOfMines: number): void
   (e: 'startGame'): void
 }>()
 
 const data = useVModels(props, emit)
 
-const customSettingsError = computed(() => {
+const settingsError = computed(() => {
+  if (!data.username.value) return 'Имя должно быть заполнено'
+
   if (data.gameSetting.value?.key !== 'custom') return false
 
   if (!data.customCols.value) return 'Ширина должна быть заполнена'
@@ -52,7 +54,6 @@ const customSettingsError = computed(() => {
 
 <template>
   <div class="flex flex-col gap-y-4 w-full md:max-w-lg mx-auto">
-    <p class="text-center font-bold">Выберите уровень</p>
     <div class="flex flex-col gap-y-4">
       <MyInput placeholder="Введите имя" class="mb-3" v-model="data.username.value" />
       <MyButton
@@ -71,26 +72,28 @@ const customSettingsError = computed(() => {
         v-if="data.gameSetting.value?.key === 'custom'"
         class="w-full flex justify-between items-center gap-x-2"
       >
-        <MyInput placeholder="Ширина" class="mb-3" v-model="data.customCols.value" />
-        <MyInput placeholder="Высота" class="mb-3" v-model="data.customRows.value" />
-        <MyInput placeholder="Мины" class="mb-3" v-model="data.customAmountOfMines.value" />
+        <MyInput type="number" placeholder="Ширина" class="mb-3" v-model="data.customCols.value" />
+        <MyInput type="number" placeholder="Высота" class="mb-3" v-model="data.customRows.value" />
+        <MyInput
+          type="number"
+          placeholder="Мины"
+          class="mb-3"
+          v-model="data.customAmountOfMines.value"
+        />
       </div>
     </div>
-
-    <p
-      v-if="data.gameSetting.value?.key === 'custom' && customSettingsError"
-      class="text-center text-red-600"
-    >
-      {{ customSettingsError }}
-    </p>
     <MyButton
       class="justify-center"
       color="blue-500"
       text-color="white"
-      :disabled="customSettingsError"
+      :disabled="settingsError"
       @click="$emit('startGame')"
     >
       Начать игру
     </MyButton>
+
+    <p v-if="settingsError" class="text-center text-red-600">
+      {{ settingsError }}
+    </p>
   </div>
 </template>

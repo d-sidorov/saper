@@ -40,7 +40,7 @@ const cellBackground = computed(() => {
     case 'opened': {
       if (cell.value.numberOfMinesNearby)
         return cellBackgroundByMineAmountMap[cell.value.numberOfMinesNearby]
-      return 'bg-gray-200'
+      return 'bg-gray-300'
     }
     case 'closed':
       return 'bg-white'
@@ -86,7 +86,6 @@ const onMouseUp = (e: MouseEvent) => {
 
     clearTimeout(mouseDownTimer)
     if (mouseWheelClick) {
-      console.log('wheelClick')
       emit('wheelClick', e)
     } else {
       mouseWheelClick = true
@@ -98,7 +97,7 @@ const onMouseUp = (e: MouseEvent) => {
 
 <template>
   <td
-    class="border border-slate-300 min-h-[30px] min-w-[30px] h-[30px] w-[30px] p-0 cursor-pointer select-none"
+    class="border border-slate-400 min-h-[30px] min-w-[30px] h-[30px] w-[30px] p-0 cursor-pointer select-none"
     :class="[cellBackground, cellBorder]"
     @click="$emit('click')"
     @contextmenu.prevent="$emit('contextmenu')"

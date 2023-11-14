@@ -10,18 +10,19 @@ const leaderBoardStore = useLeaderBoardStore()
 const activeComponentName = ref<IGamePages>('settings')
 const activeGameSetting = ref<ISettings | null>(null)
 const username = ref<string>('')
-const customCols = ref<string>('')
-const customRows = ref<string>('')
-const customAmountOfMines = ref<string>('')
+const customCols = ref<number>(10)
+const customRows = ref<number>(10)
+const customAmountOfMines = ref<number>(5)
 
 const onStartGame = () => {
   if (!activeGameSetting.value) return
 
   if (activeGameSetting.value.key === 'custom') {
-    activeGameSetting.value.cols = Number(customCols.value)
-    activeGameSetting.value.rows = Number(customRows.value)
-    activeGameSetting.value.amountOfMines = Number(customAmountOfMines.value)
+    activeGameSetting.value.cols = customCols.value
+    activeGameSetting.value.rows = customRows.value
+    activeGameSetting.value.amountOfMines = customAmountOfMines.value
   }
+
   activeComponentName.value = 'game'
 }
 const onGoHome = () => {
