@@ -49,6 +49,11 @@ const formatTime = computed(() => {
     seconds: `0${seconds}`.slice(-2)
   }
 })
+const gameStatusBorderClass = computed(() => {
+  if (gameStatus.value === 'lose') return 'border-2 border-red-500'
+  else if (gameStatus.value === 'win') return 'border-2 border-green-500'
+  return null
+})
 
 const onCellClick = (cell: ICell) => {
   if (isGameFinished.value || cell.isOpen || cell.mark) return
@@ -170,7 +175,7 @@ onBeforeUnmount(() => {
     </div>
 
     <div class="flex overflow-auto">
-      <table class="border-collapse border border-slate-400 mx-auto">
+      <table class="border-collapse border border-slate-400 mx-auto" :class="gameStatusBorderClass">
         <tr v-for="(row, y) in field" :key="y">
           <GameCell
             v-for="(cell, x) in row"
